@@ -2,12 +2,8 @@
 
 ## Source
 
-- File: `SOURCE_NOTES/Magnetic-Design-Handboob_2D00_slup132.md`
+- File: `Raw/Magnetic-Design-Handboob_2D00_slup132.md`
 - Bibliographic identity: Lloyd H. Dixon, Jr., *Magnetics Design Handbook*, Texas Instruments / Unitrode, SLUP132, reproduced from the 2001 Unitrode Magnetics Design Handbook.
-
-## Note On Placement
-
-This file appears to be a raw OCR/source text rather than a derived source note. It is still usable as a source, but on a future cleanup pass it would fit better under `Raw/` with this file retained as the ingestion note.
 
 ## Distinctive Contributions
 

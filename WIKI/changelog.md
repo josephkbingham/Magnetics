@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-07-03 (magnetic-mechanical analogy)
+
+- Ingested `Raw/Magnetic_Mechanical_Analogy_Reference.docx` (extracted to `Raw/Magnetic_Mechanical_Analogy_Reference.md`) and added `SOURCE_NOTES/magnetic-mechanical-analogy-reference.md` mapping its coverage. [source: /magnetics-wiki-schema.md §1]
+- Added `magnetic-mechanical-analogy.md` as a new wiki page presenting the three-level spring-mass analogy (circuit terminals as mass, magnetic circuit as spring via Hopkinson's law, material permeability as compliance), the coil-as-gyrator reconciliation, the resolved gap paradox, the four working equations for $B$, and the gap-lowers-$B$ effective-magnetic-length derivation, each with a GIC framing and a dedicated Tradeoffs section. [source: Magnetic-Mechanical Analogy Ref. §1-§13]
+- Cross-linked the new page from `electromagnetic-fundamentals.md`, `air-gap-and-saturation.md`, and `equation-reference.md`, and added the gap-dominated effective-magnetic-length form of $B$ to `equation-reference.md`. [source: /magnetics-wiki-schema.md §2]
+- Updated `index.md`, `README.md`, and `SOURCE_NOTES/README.md` to surface the new source and page. [source: /magnetics-wiki-schema.md §2]
+
+## 2026-07-03
+
+- Added `converter-topologies.md` as a topology inventory for DC/DC, AC/DC, and DC/AC converters, mapping each family to the magnetic components and initial design-input fields needed for future topology-specific pages. [source: /magnetics-wiki-schema.md §3] [source: TI SLUP132 §2 Core Limitations in SMPS Applications] [source: TI SLUP132 §4 Power Transformer Design] [source: TI SLUP132 §5 Inductor and Flyback Transformer Design]
+- Updated `README.md` and `index.md` navigation so the new topology inventory is visible from the repository landing page and wiki index. [source: /magnetics-wiki-schema.md §2]
+- Added `inductor-design-inputs.md` as a reusable checklist for converter-derived inductor designs, covering required waveform, current, thermal, core, winding, and verification inputs before core/gap/turns calculations begin. [source: TI SLUP132 §5 Design Strategy] [source: Hurley & Wolfle Ch. 3 §3.2]
+- Added `equation-reference.md` as a dedicated formula sheet covering electromagnetic fundamentals, gap and saturation equations, inductor first-pass sizing, thermal/core selection, transformer models, transformer sizing, and high-frequency effects. [source: Erickson & Maksimovic Ch. 10-11] [source: Hurley & Wolfle Ch. 1-5]
+
 ## 2026-04-20
 
 - Created the initial linked wiki structure under `WIKI` from the repository schema and the available Erickson and Maksimovic raw source. [source: /magnetics-wiki-schema.md §1] [source: Erickson & Maksimovic Ch. 10 intro] [source: Erickson & Maksimovic Ch. 11 intro]
@@ -24,6 +38,11 @@
 - Renamed `## Design Implication` to `## Tradeoffs` in `high-frequency-effects.md` to satisfy §4.4: comparative/evaluative language must appear only in sections titled `## Tradeoffs` or `## Design Decision`. [source: /magnetics-wiki-schema.md §4.4]
 - Rephrased vague "can be beneficial here" in `coupled-filter-inductors.md` Limits section to a clinical statement about $L_\ell$ limiting mismatch-driven circulating current. [source: /magnetics-wiki-schema.md §4.4]
 - Extended the `index.md` navigation section to explicitly include the two TI-sourced pages. [source: /magnetics-wiki-schema.md §2]
+
+## 2026-04-20 ($B$ vs. $H$ clarification)
+
+- Expanded `electromagnetic-fundamentals.md` with an explicit cause-and-effect explanation of magnetic field intensity $H$, flux density $B$, flux $\Phi$, and induced voltage so the page now states what is directly imposed by current drive versus what is the material response. [source: Erickson & Maksimovic Ch. 10 eq. 10.3-10.10]
+- Added a short comparison between the general Biot-Savart field-construction method and the symmetry-based use of Ampere's law; Biot-Savart content is explicitly marked `[UNVERIFIED]` because it is not yet backed by an ingested source in this repo. [source: /magnetics-wiki-schema.md §4.1] [source: Erickson & Maksimovic Ch. 10 eq. 10.7-10.8] [source: TI SLUP132 eq. 1]
 
 ## Related Pages
 

@@ -12,6 +12,7 @@ This directory contains source-specific ingestion notes. These files are not the
 - [erickson-maksimovic-magnetics.md](./erickson-maksimovic-magnetics.md)
 - [hurley-wolfle-xfmr-and-inductor.md](./hurley-wolfle-xfmr-and-inductor.md)
 - [ti-dixon-magnetics-design-handbook.md](./ti-dixon-magnetics-design-handbook.md)
+- [magnetic-mechanical-analogy-reference.md](./magnetic-mechanical-analogy-reference.md)
 
 ## Template
 

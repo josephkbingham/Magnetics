@@ -15,6 +15,7 @@ The wiki currently covers:
 
 - electromagnetic fundamentals
 - air-gap behavior and saturation
+- the magnetic-mechanical (spring-mass) analogy for inductance, reluctance, permeability, gaps, and saturation
 - distributed-gap versus discrete-gap tradeoffs
 - core materials and losses
 - CCM buck output-filter inductor design
@@ -25,6 +26,8 @@ The wiki currently covers:
 - transformer design methodology
 - transformer insulation
 - high-frequency winding and core effects
+- converter topology inventory for DC/DC, AC/DC, and DC/AC magnetics planning
+- general inductor design input checklist for converter-derived inductors
 
 Start at [WIKI/index.md](WIKI/index.md).
 

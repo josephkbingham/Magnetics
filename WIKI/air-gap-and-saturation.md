@@ -57,6 +57,8 @@ Increasing $\ell_g$ increases $\mathcal{R}_g$, which increases saturation curren
 ## Related Pages
 
 - [Electromagnetic Fundamentals](./electromagnetic-fundamentals.md)
+- [Magnetic-Mechanical Analogy](./magnetic-mechanical-analogy.md)
+- [Equation Reference](./equation-reference.md)
 - [Buck Output Filter Inductor Design](./buck-output-filter-inductor-design.md)
 - [Verification And Measurement](./verification-and-measurement.md)
 - [Index](./index.md)
