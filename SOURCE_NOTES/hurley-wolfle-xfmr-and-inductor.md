@@ -29,11 +29,11 @@
 
 ## Wiki Pages Fed By This Source
 
-- `WIKI/distributed-gap-and-fringing.md`
-- `WIKI/thermal-design-and-core-selection.md`
-- `WIKI/worked-example-buck-gapped-core.md`
 - `WIKI/verification-and-measurement.md`
-- `WIKI/core-materials-and-losses.md`
+- `WIKI/core-gap-and-thermal-design.md`
+- `WIKI/high-frequency-and-winding-effects.md`
+- `WIKI/inductor-design-deep-dive.md`
+- `WIKI/transformer-design-deep-dive.md`
 
 ## Notes
 

@@ -15,10 +15,10 @@
 
 ## Wiki Pages Fed By This Source
 
-- `WIKI/electromagnetic-fundamentals.md`
-- `WIKI/air-gap-and-saturation.md`
-- `WIKI/core-materials-and-losses.md`
-- `WIKI/buck-output-filter-inductor-design.md`
+- `WIKI/magnetic-theory.md`
+- `WIKI/core-gap-and-thermal-design.md`
+- `WIKI/inductor-design-deep-dive.md`
+- `WIKI/equation-reference.md`
 
 ## Remaining Useful Areas
 

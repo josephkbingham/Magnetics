@@ -1,485 +1,361 @@
 # Equation Reference
 
-## Scope
+This is a compact formula sheet. Use [Master Design Guide](./master-design-guide.md) for the beginner workflow and the deep-dive pages for assumptions.
 
-This page collects the main equations used by the magnetics wiki for quick lookup. Detailed assumptions, design context, and tradeoffs remain on the topic pages linked at the end of this page.
+## Constants And Symbols
+
+| Symbol | Meaning |
+| --- | --- |
+| $A_e$ or $A_c$ | Effective core cross-sectional area |
+| $W_a$ | Core window area |
+| $A_p=A_eW_a$ | Area product |
+| $MLT$ | Mean length per turn |
+| $V_e$ or $V_c$ | Core volume |
+| $k_u$ or $K_u$ | Window utilization/fill factor |
+| $\mu_0$ | Permeability of free space |
+| $\mu_r$ | Relative permeability |
+| $\rho_w$ | Winding resistivity |
 
 ## Electromagnetic Fundamentals
 
-Magnetic flux through a cross-section is
+Flux:
 
 $$
-\Phi = B A_c
+\Phi=BA_e
 $$
 
-[source: Erickson & Maksimovic Ch. 10 eq. 10.3-10.4]
-
-Faraday's law for one turn is
+Faraday's law:
 
 $$
-v(t) = \frac{d\Phi(t)}{dt}
+v(t)=N\frac{d\Phi}{dt}=NA_e\frac{dB}{dt}
 $$
 
-and, for uniform flux density through area $A_c$,
+Ampere's law:
 
 $$
-v(t) = A_c \frac{dB(t)}{dt}
+\oint H\cdot d\ell=NI
 $$
 
-[source: Erickson & Maksimovic Ch. 10 eq. 10.5-10.6]
-
-Ampere's law is
+Uniform path approximation:
 
 $$
-\oint H \cdot d\ell = NI
+H\approx\frac{NI}{\ell_m}
 $$
 
-and for an approximately uniform magnetic path,
+Linear material relation:
 
 $$
-H \approx \frac{NI}{\ell_m}
+B=\mu H=\mu_r\mu_0H
 $$
 
-[source: Erickson & Maksimovic Ch. 10 eq. 10.7-10.8] [source: TI SLUP132 eq. 1]
-
-The linear material relation is
-
-$$
-B = \mu H = \mu_r \mu_0 H
-$$
-
-[source: Erickson & Maksimovic Ch. 10 eq. 10.10]
+[source: Erickson & Maksimovic Ch. 10 eq. 10.3-10.10]
 
 ## Reluctance, Gap, And Saturation
 
-Core and air-gap reluctance are
+Reluctance:
 
 $$
-\mathcal{R}_c = \frac{\ell_c}{\mu A_c}
+\mathcal{R}=\frac{\ell}{\mu A_e}
 $$
 
-$$
-\mathcal{R}_g = \frac{\ell_g}{\mu_0 A_c}
-$$
-
-[source: Erickson & Maksimovic Ch. 10 eq. 10.27]
-
-The magnetic-circuit relation is
-
-$$
-ni = \Phi(\mathcal{R}_c + \mathcal{R}_g)
-$$
-
-[source: Erickson & Maksimovic Ch. 10 eq. 10.28]
-
-Inductance is
-
-$$
-L = \frac{n^2}{\mathcal{R}_c + \mathcal{R}_g}
-$$
-
-[source: Erickson & Maksimovic Ch. 10 eq. 10.31]
-
-At saturation,
-
-$$
-\Phi_{sat} = B_{sat} A_c
-$$
-
-and
-
-$$
-I_{sat} = \frac{B_{sat} A_c}{n}(\mathcal{R}_c + \mathcal{R}_g)
-$$
-
-[source: Erickson & Maksimovic Ch. 10 eq. 10.32-10.33]
-
-For a gap-dominated inductor,
-
-$$
-n I_{max} = B_{max} \frac{\ell_g}{\mu_0}
-$$
-
-and
-
-$$
-L = \frac{\mu_0 A_c n^2}{\ell_g}
-$$
-
-[source: Erickson & Maksimovic Ch. 11 eq. 11.6-11.7]
-
-Equivalently, in terms of the effective magnetic length of the series core-plus-gap path,
-
-$$
-B = \frac{\mu_0 NI}{\ell_c/\mu_r + \ell_g}
-$$
-
-which shows the gap term $\ell_g$ dominates the denominator once $\ell_c/\mu_r \ll \ell_g$, since the core contributes only its physical length divided by $\mu_r$. [source: Magnetic-Mechanical Analogy Ref. §10.3]
-
-## Buck Inductor First-Pass Design
-
-Allowed copper loss sets winding resistance through
-
-$$
-P_{cu} = I_{rms}^2 R
-$$
-
-[source: Erickson & Maksimovic Ch. 11 eq. 11.1]
-
-The winding fit condition is
-
-$$
-K_u W_A \ge n A_W
-$$
-
-[source: Erickson & Maksimovic Ch. 11 eq. 11.10]
-
-Winding resistance from mean length per turn is
-
-$$
-R = \rho \frac{n(MLT)}{A_W}
-$$
-
-[source: Erickson & Maksimovic Ch. 11 eq. 11.13]
+Core and gap:
 
-The core-geometry constant condition is
-
-$$
-K_g = \frac{A_c^2 W_A}{MLT} \ge \frac{\rho L^2 I_{max}^2}{B_{max}^2 R K_u}
-$$
-
-[source: Erickson & Maksimovic Ch. 11 eq. 11.14-11.15]
-
-For centimeter-based core tables,
-
-$$
-K_g \ge \frac{\rho L^2 I_{max}^2}{B_{max}^2 R K_u}10^8
-$$
-
-[source: Erickson & Maksimovic Ch. 11 eq. 11.16]
-
-Turns and approximate gap are
-
-$$
-n = \frac{L I_{max}}{B_{max} A_c}10^4
-$$
-
 $$
-\ell_g = \frac{\mu_0 A_c n^2}{L}10^{-4}
+\mathcal{R}_c=\frac{\ell_c}{\mu A_e}, \qquad
+\mathcal{R}_g=\frac{\ell_g}{\mu_0A_e}
 $$
 
-with $A_c$ in cm$^2$. [source: Erickson & Maksimovic Ch. 11 eq. 11.17-11.18]
+Magnetic circuit:
 
-The usable wire-area check is
-
 $$
-A_W \le \frac{K_u W_A}{n}
+NI=\Phi(\mathcal{R}_c+\mathcal{R}_g)
 $$
-
-[source: Erickson & Maksimovic Ch. 11 eq. 11.20]
 
-## Fringing
+Inductance:
 
-For a rectangular gap cross-section $a \times b$ and gap length $g$,
-
 $$
-L' = L \frac{(a + g)(b + g)}{ab}
+L=\frac{N^2}{\mathcal{R}_c+\mathcal{R}_g}
 $$
 
-[source: Hurley & Wolfle Ch. 2 eq. 2.65]
+Gap-dominated flux density:
 
-For $g \ll a$ or $b$,
-
 $$
-L' \approx L \left(1 + \frac{a + b}{ab} g\right)
+B=\frac{\mu_0NI}{\ell_g+\ell_c/\mu_r}
 $$
-
-[source: Hurley & Wolfle Ch. 2 eq. 2.66]
 
-For a square cross-section, the fringing factor reduces to
+Gap-dominated inductance:
 
 $$
-1 + \frac{2g}{a}
+L\approx\frac{\mu_0A_eN^2}{\ell_g}
 $$
 
-[source: Hurley & Wolfle Ch. 2 §2.5]
+Saturation flux and current:
 
-## Thermal And Core Selection
-
-Temperature rise is modeled as
-
 $$
-\Delta T = R_{\theta} Q = \frac{1}{h_c A_t}Q
+\Phi_{sat}=B_{sat}A_e
 $$
-
-[source: Hurley & Wolfle Ch. 3 eq. 3.14-3.15]
 
-An empirical thermal-resistance approximation is
-
 $$
-R_{\theta} = \frac{0.06}{\sqrt{V_c}}
+I_{sat}=\frac{B_{sat}A_e}{N}(\mathcal{R}_c+\mathcal{R}_g)
 $$
-
-with $R_{\theta}$ in $^\circ$C/W for $V_c$ in m$^3$. [source: Hurley & Wolfle Ch. 3 eq. 3.16]
 
-Window utilization is
-
-$$
-k_u = \frac{W_c}{W_a}
-$$
+[source: Erickson & Maksimovic Ch. 10 eq. 10.27-10.33]
 
-[source: Hurley & Wolfle Ch. 3 eq. 3.18]
+## Inductor Design
 
-The thermal-current-density result is
+Inductor ripple:
 
 $$
-J_o = \sqrt{\frac{1}{1 + \gamma} \frac{h_c A_t \Delta T}{\rho_w V_w k_u}}
+\Delta I=\frac{V_L\Delta t}{L}
 $$
 
-[source: Hurley & Wolfle Ch. 3 eq. 3.24]
+CCM buck ripple:
 
-Using dimensional analysis,
-
 $$
-J_o = K_t \sqrt{\frac{\Delta T}{k_u(1 + \gamma)}} \frac{1}{\sqrt[8]{A_p}}
+D\approx\frac{V_o}{V_{in}}, \qquad
+\Delta I_L=\frac{(V_{in}-V_o)D}{f_sL}
 $$
 
-with
+Peak current:
 
 $$
-K_t = \sqrt{\frac{h_c k_a}{\rho_w k_w}}
+I_{pk}=I_{dc}+\frac{\Delta I_{pp}}{2}
 $$
-
-[source: Hurley & Wolfle Ch. 3 eq. 3.28-3.29]
 
-The inductor area-product requirement is
+Triangular ripple RMS:
 
 $$
-A_p = \left[ \frac{\sqrt{1 + \gamma}\, K_i L \hat{I}^2}{B_{max} K_t \sqrt{k_u \Delta T}} \right]^{8/7}
+I_{rms}\approx\sqrt{I_{dc}^2+\frac{\Delta I_{pp}^2}{12}}
 $$
 
-[source: Hurley & Wolfle Ch. 3 eq. 3.35]
+Stored energy:
 
-Optimum effective permeability is
-
 $$
-\mu_{opt} = \frac{B_{sat} l_c K_i}{\mu_0 \sqrt{\frac{P_{cu\ max} k_u W_a}{\rho_w MLT}}}
+E=\frac{1}{2}LI_{pk}^2
 $$
 
-[source: Hurley & Wolfle Ch. 3 eq. 3.20]
+Flux check:
 
-Turns from manufacturer $A_L$ data are
-
 $$
-N = \sqrt{\frac{L}{A_L}}
+B_{pk}=\frac{LI_{pk}}{NA_e}
 $$
-
-[source: Hurley & Wolfle Ch. 3 eq. 3.36]
 
-Temperature-corrected winding resistivity is
+Minimum turns:
 
 $$
-\rho_w = \rho_{20}[1 + \alpha_{20}(T_{max} - 20^\circ\text{C})]
+N\ge\frac{LI_{pk}}{B_{max}A_e}
 $$
 
-[source: Hurley & Wolfle Ch. 3 eq. 3.37]
+Turns from $A_L$:
 
-## Transformer Model
-
-The reflected secondary current is
-
 $$
-I_2^1 = \frac{1}{a}I_2
+N=\sqrt{\frac{L}{A_L}}
 $$
-
-[source: Hurley & Wolfle Ch. 4 eq. 4.35]
 
-Core mmf balance is
+Approximate gap:
 
 $$
-N_1 I_1 - N_2 I_2 = \phi_m \mathcal{R}
+\ell_g\approx\frac{\mu_0A_eN^2}{L}-\frac{\ell_c}{\mu_r}
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.34]
-
-The leakage-inclusive winding voltage equations are
-
-$$
-V_1 = [L_{l1} + L_1]\frac{di_1}{dt} + M_{12}\frac{di_2}{dt}
-$$
+Window fit:
 
 $$
-V_2 = [L_{l2} + L_2]\frac{di_2}{dt} + M_{21}\frac{di_1}{dt}
+NA_{cu}\le k_uW_a
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.39-4.40]
+Allowed resistance from copper loss:
 
-Mutual inductance and coupling are
-
 $$
-M = \sqrt{L_1 L_2}
+R_{max}=\frac{P_{cu,max}}{I_{rms}^2}
 $$
 
-$$
-k = \sqrt{k_1 k_2}
-$$
+Winding resistance:
 
 $$
-M = k\sqrt{L_{11}L_{22}}
+R=\rho_w\frac{N(MLT)}{A_{cu}}
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.45, 4.50-4.51]
-
-Referred secondary quantities are
-
-$$
-R_2^1 = a^2 R_2
-$$
+Geometry constant:
 
 $$
-X_{l2}^1 = a^2 X_{l2}
+K_g=\frac{A_e^2W_a}{MLT}\ge\frac{\rho_wL^2I_{pk}^2}{B_{max}^2RK_u}
 $$
 
-$$
-V_2^1 = aV_2
-$$
+Inductor area product:
 
 $$
-I_2^1 = \frac{1}{a}I_2
+A_p=\left[\frac{\sqrt{1+\gamma}K_iLI_{pk}^2}{B_{max}K_t\sqrt{k_u\Delta T}}\right]^{8/7}
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.53-4.56]
-
-The referred series terms are
-
-$$
-R_{eq} = R_1 + a^2R_2
-$$
+Optimum effective permeability:
 
 $$
-X_{eq} = X_{l1} + a^2X_{l2}
+\mu_{opt}=\frac{B_{sat}l_cK_i}{\mu_0\sqrt{\frac{P_{cu,max}k_uW_a}{\rho_wMLT}}}
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.57-4.58]
+[source: Erickson & Maksimovic Ch. 11 eq. 11.1-11.20] [source: Hurley & Wolfle Ch. 3 eq. 3.20, 3.35-3.38]
 
 ## Transformer Design
 
-The general transformer voltage equation is
+Ideal ratio:
 
 $$
-V_{rms} = K_v f N B_{max} A_m
+\frac{V_s}{V_p}\approx\frac{N_s}{N_p}
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.62]
-
-The winding VA sum is
+Volt-second flux swing:
 
 $$
-\sum VA = K_v f B_{max} J_o k_f k_u A_p
+\Delta B=\frac{1}{NA_e}\int v(t)\,dt
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.73]
-
-Transformer winding loss is
+General RMS voltage equation:
 
 $$
-P_{cu} = \rho_w V_w k_u J_o^2
+V_{rms}=K_vfNB_{max}A_e
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.76]
-
-The optimized loss model is
+VA area-product relation:
 
 $$
-P = \frac{a}{f^2 B_{max}^2} + b f^\alpha B_{max}^\beta
+\sum VA=K_vfB_{max}Jk_fk_uA_p
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.79]
-
-For fixed frequency, minimum loss occurs when
+Fixed-frequency area product:
 
 $$
-P_{cu} = \frac{\beta}{2}P_{fe}
+A_p=\left[\frac{\sqrt{2}\sum VA}{K_vfB_ok_fK_t\sqrt{k_u\Delta T}}\right]^{8/7}
 $$
 
-[source: Hurley & Wolfle Ch. 4 eq. 4.83]
-
-For fixed-frequency transformer design,
+Saturation-limited starting estimate:
 
 $$
-J_o = K_t \sqrt{\frac{\Delta T}{2k_u}} \frac{1}{\sqrt[8]{A_p}}
+A_{p1}=\left[\frac{\sqrt{2}\sum VA}{K_vfB_{sat}k_fK_t\sqrt{k_u\Delta T}}\right]^{8/7}
 $$
 
-[source: Hurley & Wolfle Ch. 5 eq. 5.4]
-
-When optimum flux density is not saturation-limited,
+Minimum-loss relation at fixed frequency:
 
 $$
-A_p = \left[ \frac{\sqrt{2}\sum VA}{K_v f B_o k_f K_t \sqrt{k_u \Delta T}} \right]^{8/7}
+P_{cu}=\frac{\beta}{2}P_{fe}
 $$
 
-[source: Hurley & Wolfle Ch. 5 eq. 5.5]
-
-The corresponding optimum flux density is
+Magnetizing inductance:
 
 $$
-B_o = \frac{[h_c k_a \Delta T]^{2/3}}{2^{2/3}[\rho_w k_w k_u]^{1/12}[k_c K_c f^\alpha]^{7/12}}\left[\frac{K_v f k_f k_u}{\sum VA}\right]^{1/6}
+L_m=\frac{N_p^2}{\mathcal{R}}
 $$
 
-[source: Hurley & Wolfle Ch. 5 eq. 5.8]
-
-When saturation limits the design, the initial area-product estimate is
+Magnetizing current ramp:
 
 $$
-A_{p1} = \left[ \frac{\sqrt{2}\sum VA}{K_v f B_{sat} k_f K_t \sqrt{k_u \Delta T}} \right]^{8/7}
+\Delta I_m=\frac{1}{L_m}\int v_p(t)\,dt
 $$
 
-[source: Hurley & Wolfle Ch. 5 eq. 5.9]
-
-Transformer turns are
+Reflected secondary terms:
 
 $$
-N = \frac{V_{rms}}{K_v f B_{max} A_m}
+I_s'=\frac{1}{a}I_s, \qquad
+R_s'=a^2R_s, \qquad
+X_{ls}'=a^2X_{ls}
 $$
 
-[source: Hurley & Wolfle Ch. 5 eq. 5.15]
-
-## High-Frequency Effects And Core Loss
-
-Skin depth is
+Equivalent series terms:
 
 $$
-\delta = \frac{1}{\sqrt{\pi f \mu \sigma}}
+R_{eq}=R_p+a^2R_s, \qquad
+X_{eq}=X_{lp}+a^2X_{ls}
 $$
 
-[source: Hurley & Wolfle Ch. 1 eq. 1.21]
-
-A first approximation for round-wire AC resistance is
+Mutual inductance:
 
 $$
-R_{ac} = R_{dc}\left[1 + \frac{(r_o/\delta)^4}{48 + 0.8(r_o/\delta)^4}\right]
+M=k\sqrt{L_1L_2}
 $$
 
-[source: Hurley & Wolfle Ch. 1 eq. 1.22] [source: Hurley & Wolfle Ch. 4 eq. 4.36]
+[source: Hurley & Wolfle Ch. 4 eq. 4.34-4.83] [source: Hurley & Wolfle Ch. 5 eq. 5.4-5.15]
 
-Steinmetz core-loss density is
+## Core, Thermal, And Winding Loss
+
+Temperature-corrected copper resistivity:
 
 $$
-P_{fe} = K_c f^\alpha B_{max}^\beta
+\rho_w=\rho_{20}[1+\alpha_{20}(T_{max}-20^\circ\text{C})]
 $$
 
-[source: Hurley & Wolfle Ch. 1 eq. 1.29] [source: Hurley & Wolfle Ch. 4 §4.3.4]
+Copper loss:
+
+$$
+P_{cu}=I_{rms}^2R
+$$
+
+Core-loss density:
+
+$$
+P_{fe}=K_cf^\alpha B_{max}^\beta
+$$
+
+Total temperature rise:
+
+$$
+\Delta T=R_\theta(P_{cu}+P_{fe})
+$$
+
+Convection form:
+
+$$
+\Delta T=\frac{Q}{h_cA_t}
+$$
+
+Empirical thermal resistance:
+
+$$
+R_\theta=\frac{0.06}{\sqrt{V_c}}
+$$
+
+Skin depth:
+
+$$
+\delta=\frac{1}{\sqrt{\pi f\mu\sigma}}
+$$
+
+Round-wire AC-resistance approximation:
+
+$$
+R_{ac}=R_{dc}\left[1+\frac{(r_o/\delta)^4}{48+0.8(r_o/\delta)^4}\right]
+$$
+
+[source: Hurley & Wolfle Ch. 1 eq. 1.21-1.29] [source: Hurley & Wolfle Ch. 3 eq. 3.14-3.16, 3.37] [source: Hurley & Wolfle Ch. 4 eq. 4.36]
+
+## Fringing
+
+For a rectangular discrete gap:
+
+$$
+L'=L\frac{(a+g)(b+g)}{ab}
+$$
+
+For $g\ll a$ or $b$:
+
+$$
+L'\approx L\left(1+\frac{a+b}{ab}g\right)
+$$
+
+For a square cross-section:
+
+$$
+1+\frac{2g}{a}
+$$
+
+[source: Hurley & Wolfle Ch. 2 eq. 2.65-2.66]
 
 ## Related Pages
 
-- [Electromagnetic Fundamentals](./electromagnetic-fundamentals.md)
-- [Air Gap And Saturation](./air-gap-and-saturation.md)
-- [Magnetic-Mechanical Analogy](./magnetic-mechanical-analogy.md)
-- [Distributed Gap And Fringing](./distributed-gap-and-fringing.md)
-- [Buck Output Filter Inductor Design](./buck-output-filter-inductor-design.md)
-- [Inductor Design Sensitivity](./inductor-design-sensitivity.md)
-- [Thermal Design And Core Selection](./thermal-design-and-core-selection.md)
-- [Practical Transformer Model](./practical-transformer-model.md)
-- [Transformer Design Methodology](./transformer-design-methodology.md)
-- [High-Frequency Effects](./high-frequency-effects.md)
+- [Master Design Guide](./master-design-guide.md)
+- [Inductor Design Deep Dive](./inductor-design-deep-dive.md)
+- [Transformer Design Deep Dive](./transformer-design-deep-dive.md)
+- [Magnetic Theory](./magnetic-theory.md)
+- [Core, Gap, And Thermal Design](./core-gap-and-thermal-design.md)
+- [High-Frequency And Winding Effects](./high-frequency-and-winding-effects.md)
+- [Verification And Measurement](./verification-and-measurement.md)
 - [Index](./index.md)

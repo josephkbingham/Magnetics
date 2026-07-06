@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-07-05 (consolidated master guide)
+
+- Added [Master Design Guide](./master-design-guide.md) with one practical inductor workflow and one practical transformer workflow.
+- Consolidated overlapping WIKI pages into fewer deep dives: inductor design, transformer design, magnetic theory, core/gap/thermal design, and high-frequency/winding effects.
+- Updated the index, equation reference, README, topology inventory, and verification backlinks to point to the consolidated structure.
+
 ## 2026-07-05 (gap, permeability, and industry split)
 
 - Expanded `air-gap-and-saturation.md` with a permeability-versus-saturation section showing why raw ferrite $\mu_r$ is second-order in a discrete-gapped inductor, using the sensitivity-page baseline effective magnetic length. [source: /WIKI/inductor-design-sensitivity.md GIC and Governing Equations] [source: Erickson & Maksimovic Ch. 10 discussion following eq. 10.31]
