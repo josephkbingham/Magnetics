@@ -16,7 +16,7 @@ The present source set distinguishes three magnetic roles that recur across conv
 
 | Topology | Isolation role | Primary magnetic component to design | Source status |
 | --- | --- | --- | --- |
-| Buck | Non-isolated | Output filter inductor | Covered by [Buck Output Filter Inductor Design](./buck-output-filter-inductor-design.md) and [Worked Example: Buck Gapped Core](./worked-example-buck-gapped-core.md). [source: Erickson & Maksimovic Ch. 11 §11.1-§11.2] [source: Hurley & Wolfle Ch. 3 Example 3.1] |
+| Buck | Non-isolated | Output filter inductor | Covered by [Inductor Design Deep Dive](./inductor-design-deep-dive.md), including the buck equations and ETD49 worked example. [source: Erickson & Maksimovic Ch. 11 §11.1-§11.2] [source: Hurley & Wolfle Ch. 3 Example 3.1] |
 | Synchronous buck / multiphase buck | Non-isolated | One inductor per phase, or coupled phase inductors | Seed entry; needs source-backed treatment before design equations are added. [UNVERIFIED] |
 | Boost | Non-isolated | Boost inductor | TI states that simple boost-inductor design follows the buck-output-filter pattern, while PFC boost operation requires line-cycle-dependent current and loss treatment. [source: TI SLUP132 §5 Boost Inductor] |
 | Buck-boost / inverting flyback inductor | Non-isolated | Single-winding flyback or buck-boost inductor | TI groups filter inductors, boost inductors, and flyback inductors as power-inductor family members that store and return magnetic energy. [source: TI SLUP132 §5 Inductor and Flyback Transformer Design] |
@@ -37,7 +37,7 @@ The present source set distinguishes three magnetic roles that recur across conv
 | Boost PFC | Non-isolated front end | Boost inductor | TI states that PFC boost design is complicated by the continuously varying full-wave rectified line voltage and multiple possible operating modes. [source: TI SLUP132 §5 Boost Inductor] |
 | Interleaved boost PFC | Non-isolated front end | Multiple boost inductors, or coupled/interphase inductors | Seed entry; interleaved PFC magnetics are not yet source-backed in this wiki. [UNVERIFIED] |
 | Bridgeless / totem-pole PFC | Non-isolated front end | Boost inductor or inductors plus EMI magnetics | Seed entry; bridgeless and totem-pole PFC magnetics are not yet source-backed in this wiki. [UNVERIFIED] |
-| Off-line isolated flyback | Isolated | Flyback coupled inductor with safety insulation | TI identifies flyback transformers as coupled inductors and notes that separate windings provide isolation; insulation requirements are covered in [Transformer Insulation](./transformer-insulation.md). [source: TI SLUP132 §5 Flyback Transformer Design] [source: Hurley & Wolfle Ch. 5 §5.4] |
+| Off-line isolated flyback | Isolated | Flyback coupled inductor with safety insulation | TI identifies flyback transformers as coupled inductors and notes that separate windings provide isolation; insulation requirements are covered in [Transformer Design Deep Dive](./transformer-design-deep-dive.md). [source: TI SLUP132 §5 Flyback Transformer Design] [source: Hurley & Wolfle Ch. 5 §5.4] |
 | Off-line forward / half bridge / full bridge | Isolated | True transformer plus output inductor and EMI magnetics | TI treats forward, bridge, and half-bridge converters as buck-derived transformer applications; primary-secondary isolation is a transformer function in off-line applications. [source: TI SLUP132 §4 Power Transformer Design] |
 | Active-clamp flyback / active-clamp forward | Isolated | Flyback or forward magnetic with clamp/reset energy constraints | Seed entry; active-clamp-specific magnetics inputs are not yet source-backed in this wiki. [UNVERIFIED] |
 | LLC AC/DC stage | Isolated | Resonant transformer and resonant inductance | Seed entry; LLC-specific magnetics inputs are not yet source-backed in this wiki. [UNVERIFIED] |
@@ -59,7 +59,7 @@ No inverter-specific design source has been ingested. The entries below are plan
 
 Every future topology-specific design sheet should begin with the GIC structure required by the repository schema: Geometry, Input, and Constraint. [source: /magnetics-wiki-schema.md §4.2]
 
-For inductor-specific designs, use [Inductor Design Inputs](./inductor-design-inputs.md) as the common input checklist before applying a topology-specific procedure. [source: TI SLUP132 §5 Design Strategy]
+For inductor-specific designs, use [Master Design Guide](./master-design-guide.md) for the short workflow and [Inductor Design Deep Dive](./inductor-design-deep-dive.md) for the common input checklist before applying a topology-specific procedure. [source: TI SLUP132 §5 Design Strategy]
 
 | Field group | Inputs to collect |
 | --- | --- |
@@ -89,10 +89,9 @@ For inductor-specific designs, use [Inductor Design Inputs](./inductor-design-in
 ## Related Pages
 
 - [Index](./index.md)
-- [Inductor Design Inputs](./inductor-design-inputs.md)
-- [Electromagnetic Fundamentals](./electromagnetic-fundamentals.md)
-- [Buck Output Filter Inductor Design](./buck-output-filter-inductor-design.md)
-- [Practical Transformer Model](./practical-transformer-model.md)
-- [Transformer Design Methodology](./transformer-design-methodology.md)
-- [Coupled Filter Inductors](./coupled-filter-inductors.md)
-- [Transformer Insulation](./transformer-insulation.md)
+- [Master Design Guide](./master-design-guide.md)
+- [Inductor Design Deep Dive](./inductor-design-deep-dive.md)
+- [Transformer Design Deep Dive](./transformer-design-deep-dive.md)
+- [Magnetic Theory](./magnetic-theory.md)
+- [Core, Gap, And Thermal Design](./core-gap-and-thermal-design.md)
+- [High-Frequency And Winding Effects](./high-frequency-and-winding-effects.md)

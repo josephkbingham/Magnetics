@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inductor Design Knobs — Heating vs. Saturation</title>
+<style>
+  :root{
+    --page:#f9f9f7; --card:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --flux:#2a78d6; --heat:#eb6834; --aux:#4a3aa7; --limit:#d03b3b;
+    --shade:rgba(11,11,11,.05); --tint:rgba(11,11,11,.03);
+    --serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --page:#0d0d0d; --card:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+      --flux:#3987e5; --heat:#d95926; --aux:#9085e9; --limit:#d03b3b;
+      --shade:rgba(255,255,255,.06); --tint:rgba(255,255,255,.03);
+    }
+  }
+  :root[data-theme="dark"]{
+    --page:#0d0d0d; --card:#1a1a19; --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
+    --flux:#3987e5; --heat:#d95926; --aux:#9085e9; --limit:#d03b3b;
+    --shade:rgba(255,255,255,.06); --tint:rgba(255,255,255,.03);
+  }
+  :root[data-theme="light"]{
+    --page:#f9f9f7; --card:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
+    --flux:#2a78d6; --heat:#eb6834; --aux:#4a3aa7; --limit:#d03b3b;
+    --shade:rgba(11,11,11,.05); --tint:rgba(11,11,11,.03);
+  }
+
+  html,body{background:var(--page);color:var(--ink);}
+  body{font-family:var(--sans);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:880px;margin:0 auto;padding:48px 20px 96px;}
+
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,40px);line-height:1.12;margin:10px 0 14px;text-wrap:balance;}
+  .lede{color:var(--ink2);max-width:64ch;margin:0 0 8px;}
+  h2{font-family:var(--serif);font-weight:600;font-size:25px;line-height:1.2;margin:0 0 6px;text-wrap:balance;}
+  h3{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:650;margin:26px 0 8px;}
+  p{margin:0 0 14px;max-width:68ch;}
+  a{color:var(--flux);}
+
+  section.knob{margin-top:56px;padding-top:34px;border-top:1px solid var(--grid);}
+  .knob-head{display:flex;gap:16px;align-items:flex-start;margin-bottom:6px;}
+  .knob-badge{flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:1px solid var(--axis);
+    display:flex;align-items:center;justify-content:center;background:var(--card);
+    font-family:var(--serif);font-style:italic;font-size:23px;line-height:1;color:var(--ink);}
+  .knob-badge sub{font-size:12px;}
+  .held{font-size:13px;color:var(--muted);margin:2px 0 16px;}
+  .held b{color:var(--ink2);font-weight:600;}
+
+  /* hand-set math */
+  .eq{font-family:var(--serif);font-size:19.5px;margin:18px 0;text-align:left;padding-left:28px;
+      display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;color:var(--ink);}
+  .eq .tag{font-family:var(--sans);font-style:normal;font-size:12px;color:var(--muted);margin-left:auto;padding-left:12px;}
+  var, .v{font-family:var(--serif);font-style:italic;}
+  .eq sub, .v sub{font-size:.66em;font-style:normal;font-family:var(--serif);}
+  .eq sup{font-size:.66em;}
+  .fr{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;margin:0 2px;}
+  .fr .nu{padding:0 6px 1px;border-bottom:1px solid var(--ink);line-height:1.25;}
+  .fr .de{padding:1px 6px 0;line-height:1.25;}
+  .rel{margin:0 4px;}
+  .prop-row{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 18px;}
+  .prop{font-family:var(--serif);font-size:15.5px;border:1px solid var(--border);background:var(--card);
+        border-radius:999px;padding:3px 13px;white-space:nowrap;color:var(--ink2);}
+  .prop b{font-weight:600;color:var(--ink);}
+  .prop .up{color:var(--limit);font-family:var(--sans);font-size:13px;}
+  .prop .dn{color:var(--flux);font-family:var(--sans);font-size:13px;}
+
+  /* two failure-mode cards */
+  .duo{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin:26px 0 8px;}
+  .mode{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px 12px;}
+  .mode .m-tag{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.13em;
+     text-transform:uppercase;font-weight:650;color:var(--ink2);margin-bottom:8px;}
+  .sw{width:10px;height:10px;border-radius:3px;display:inline-block;flex:0 0 auto;}
+  .mode p{font-size:14.5px;color:var(--ink2);margin-bottom:8px;}
+  .mode .eq{padding-left:4px;margin:10px 0;}
+
+  /* baseline spec */
+  .spec{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px 8px;margin:26px 0;}
+  .spec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px 18px;margin-top:12px;}
+  .spec-item{padding-bottom:10px;}
+  .spec-item .k{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .spec-item .val{font-size:16.5px;font-variant-numeric:tabular-nums;color:var(--ink);}
+  .spec-item .val .v{font-size:15.5px;}
+
+  /* figure panels */
+  .figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:14px;margin:20px 0 8px;}
+  figure.panel{margin:0;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 12px 6px;min-width:0;}
+  .p-head{display:flex;align-items:baseline;gap:8px;padding:2px 4px 8px;}
+  .p-title{font-size:13.5px;font-weight:650;color:var(--ink);}
+  .p-unit{font-size:12px;color:var(--muted);margin-left:auto;}
+  .p-plot{position:relative;}
+  .p-plot svg{display:block;width:100%;height:auto;}
+  .tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--page);
+       font-size:12px;line-height:1.3;padding:4px 8px;border-radius:6px;white-space:nowrap;
+       transform:translate(-50%,-130%);opacity:0;transition:opacity .08s linear;font-variant-numeric:tabular-nums;}
+  @media (prefers-reduced-motion: reduce){ .tip{transition:none;} }
+  .tick{font-family:var(--sans);font-size:10.5px;fill:var(--muted);font-variant-numeric:tabular-nums;}
+  .axlab{font-family:var(--sans);font-size:11px;fill:var(--muted);}
+  .limlab{font-family:var(--sans);font-size:10.5px;fill:var(--limit);}
+  .notelab{font-family:var(--sans);font-size:10.5px;fill:var(--muted);}
+  details.data{margin:6px 4px 6px;}
+  details.data summary{font-size:11.5px;color:var(--muted);cursor:pointer;}
+  details.data summary:focus-visible{outline:2px solid var(--flux);outline-offset:2px;border-radius:3px;}
+  details.data table{border-collapse:collapse;margin:8px 0 6px;font-size:12px;font-variant-numeric:tabular-nums;}
+  details.data td,details.data th{border:1px solid var(--grid);padding:3px 9px;text-align:right;color:var(--ink2);}
+  details.data th{color:var(--muted);font-weight:600;}
+
+  .takeaway{border-left:3px solid var(--axis);padding:2px 0 2px 16px;margin:18px 0 0;color:var(--ink2);font-size:15px;max-width:64ch;}
+  .takeaway b{color:var(--ink);}
+
+  /* summary table */
+  .sumwrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--card);margin-top:18px;}
+  table.summary{border-collapse:collapse;width:100%;min-width:640px;font-size:14px;}
+  table.summary th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+      text-align:left;padding:12px 14px;border-bottom:1px solid var(--grid);font-weight:650;}
+  table.summary td{padding:10px 14px;border-bottom:1px solid var(--grid);vertical-align:top;color:var(--ink2);}
+  table.summary tr:last-child td{border-bottom:none;}
+  table.summary td:first-child{color:var(--ink);font-weight:600;white-space:nowrap;}
+  table.summary .m{font-family:var(--serif);font-size:15px;white-space:nowrap;color:var(--ink);}
+  .good{color:var(--flux);font-weight:600;} .bad{color:var(--limit);font-weight:600;} .flat{color:var(--muted);}
+
+  .caveat{background:var(--tint);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-top:40px;font-size:14px;color:var(--ink2);}
+  .caveat b{color:var(--ink);}
+  .foot{margin-top:34px;font-size:13px;color:var(--muted);max-width:68ch;}
+</style>
+
+<div class="wrap">
+  <div class="eyebrow">Magnetics wiki · sensitivity study</div>
+  <h1>Heating vs. Saturation, One Knob at a Time</h1>
+  <p class="lede">Every inductor design decision pushes on two gauges: peak flux density
+  <span class="v">B̂</span> (how close the core is to saturating) and temperature rise
+  <span class="v">ΔT</span> (how hot the losses make it). This page takes one worked baseline design,
+  sweeps each design variable while holding everything else fixed, and plots what happens to both gauges.
+  The <b>dot on every curve marks the baseline design</b>; dashed red lines are the limits.</p>
+
+  <div class="duo">
+    <div class="mode">
+      <div class="m-tag"><span class="sw" style="background:var(--flux)"></span>Saturation gauge</div>
+      <p>Peak flux at the worst-case instantaneous current must stay under the material limit.</p>
+      <div class="eq"><span class="v">B̂</span> <span class="rel">=</span>
+        <span class="fr"><span class="nu"><span class="v">L Î</span></span><span class="de"><span class="v">N A<sub>c</sub></span></span></span>
+        <span class="rel">≈</span>
+        <span class="fr"><span class="nu"><span class="v">μ</span><sub>0</sub> <span class="v">N Î</span></span><span class="de"><span class="v">ℓ<sub>g</sub></span> + <span class="v">ℓ<sub>c</sub></span >/<span class="v">μ<sub>r</sub></span></span></span>
+        <span class="rel">≤</span> <span class="v">B<sub>max</sub></span>
+      </div>
+      <p>Saturation cares about the <em>peak</em> current, the turns, the core area, and the gap — nothing else.</p>
+    </div>
+    <div class="mode">
+      <div class="m-tag"><span class="sw" style="background:var(--heat)"></span>Heating gauge</div>
+      <p>Copper loss plus core loss, times the thermal resistance of the finished part.</p>
+      <div class="eq"><span class="v">ΔT</span> <span class="rel">=</span> <span class="v">R<sub>θ</sub></span> (<span class="v">P<sub>cu</sub></span> + <span class="v">P<sub>fe</sub></span>)</div>
+      <div class="eq" style="font-size:17px;"><span class="v">P<sub>cu</sub></span> <span class="rel">=</span> <span class="v">I<sub>rms</sub></span><sup>2</sup><span class="v">R</span>,&nbsp;
+        <span class="v">P<sub>fe</sub></span> <span class="rel">=</span> <span class="v">K<sub>c</sub> f</span><sup class="v">α</sup> <span class="v">B<sub>ac</sub></span><sup class="v">β</sup> <span class="v">V<sub>c</sub></span>,&nbsp;
+        <span class="v">R<sub>θ</sub></span> <span class="rel">≈</span> <span class="fr"><span class="nu">0.06</span><span class="de">√<span class="v">V<sub>c</sub></span></span></span>
+      </div>
+      <p>Heating cares about the <em>RMS</em> current, wire resistance, flux <em>ripple</em>, frequency, and body size.</p>
+    </div>
+  </div>
+
+  <div class="spec">
+    <div class="eyebrow">Baseline design — a 100 kHz buck output choke</div>
+    <div class="spec-grid" id="specGrid"></div>
+  </div>
+
+  <!-- ===================== KNOB 1 : TURNS ===================== -->
+  <section class="knob" id="k-n">
+    <div class="knob-head">
+      <div class="knob-badge">N</div>
+      <div>
+        <h2>Turns <span class="v">N</span> — the fundamental trade</h2>
+        <div class="held">Held constant: <b>L</b> (the gap is re-cut for each <span class="v">N</span>), core, wire always refilled to the full window.</div>
+      </div>
+    </div>
+    <p>With the inductance pinned at 47 µH, more turns means less flux per amp but more, thinner
+    wire in the same window. The two gauges move in <em>opposite</em> directions — this is the
+    central tension of inductor design:</p>
+    <div class="eq"><span class="v">B̂</span> <span class="rel">=</span>
+      <span class="fr"><span class="nu"><span class="v">L Î</span></span><span class="de"><span class="v">N A<sub>c</sub></span></span></span>
+      <span class="tag">flux falls as 1/N</span></div>
+    <div class="eq"><span class="v">P<sub>cu</sub></span> <span class="rel">=</span>
+      <span class="v">I<sub>rms</sub></span><sup>2</sup>
+      <span class="fr"><span class="nu"><span class="v">ρ<sub>w</sub></span> · <span class="v">MLT</span> · <span class="v">N</span><sup>2</sup></span><span class="de"><span class="v">k<sub>u</sub> W<sub>a</sub></span></span></span>
+      <span class="tag">wire area shrinks as 1/N, length grows as N → R ∝ N²</span></div>
+    <div class="prop-row">
+      <span class="prop"><b>B̂</b> ∝ 1/<span class="v">N</span> <span class="dn">▼ safer</span></span>
+      <span class="prop"><b>P<sub>cu</sub></b> ∝ <span class="v">N</span><sup>2</sup> <span class="up">▲ hotter</span></span>
+      <span class="prop"><b>P<sub>fe</sub></b> ∝ 1/<span class="v">N</span><sup class="v">β</sup> <span class="dn">▼</span></span>
+      <span class="prop"><b>ℓ<sub>g</sub></b> ∝ <span class="v">N</span><sup>2</sup></span>
+    </div>
+    <div class="figs" id="figs-n"></div>
+    <p class="takeaway"><b>Turns set where you sit between the two failure modes.</b> Too few turns
+    and the core saturates; too many and the copper cooks. The feasible window here is roughly
+    <span class="v">N</span> ≈ 17–31 — and the required gap grows as <span class="v">N</span><sup>2</sup>,
+    which is why high-turn designs need impractically large (fringing-heavy) gaps.</p>
+  </section>
+
+  <!-- ===================== KNOB 2 : GAP ===================== -->
+  <section class="knob" id="k-g">
+    <div class="knob-head">
+      <div class="knob-badge">ℓ<sub>g</sub></div>
+      <div>
+        <h2>Air gap <span class="v">ℓ<sub>g</sub></span> — the anti-saturation knob</h2>
+        <div class="held">Held constant: <b>N</b> = 20, core, wire, volt-seconds from the converter. <b>L is allowed to follow the gap.</b></div>
+      </div>
+    </div>
+    <p>Opening the gap lowers inductance and flux per amp together. The DC flux falls almost in
+    proportion to 1/<span class="v">ℓ<sub>g</sub></span> — but the lost inductance comes back as
+    current ripple. Note the surprise in the third panel: heating barely moves, because flux
+    <em>ripple</em> is set by the converter's volt-seconds
+    (<span class="v">ΔB</span> = <span class="v">V·t<sub>on</sub></span>/<span class="v">N A<sub>c</sub></span>), not by the gap.</p>
+    <div class="eq"><span class="v">L</span> <span class="rel">=</span>
+      <span class="fr"><span class="nu"><span class="v">μ</span><sub>0</sub> <span class="v">N</span><sup>2</sup> <span class="v">A<sub>c</sub></span></span><span class="de"><span class="v">ℓ<sub>g</sub></span> + <span class="v">ℓ<sub>c</sub></span>/<span class="v">μ<sub>r</sub></span></span></span>
+      <span class="rel">,</span>
+      <span class="v">B̂</span> <span class="rel">=</span>
+      <span class="fr"><span class="nu"><span class="v">μ</span><sub>0</sub> <span class="v">N Î</span></span><span class="de"><span class="v">ℓ<sub>g</sub></span> + <span class="v">ℓ<sub>c</sub></span>/<span class="v">μ<sub>r</sub></span></span></span>
+      <span class="tag">both ∝ 1/ℓ<sub>g</sub> once the gap dominates</span></div>
+    <div class="prop-row">
+      <span class="prop"><b>B̂</b> ≈ ∝ 1/<span class="v">ℓ<sub>g</sub></span> <span class="dn">▼ safer</span></span>
+      <span class="prop"><b>L</b> ≈ ∝ 1/<span class="v">ℓ<sub>g</sub></span> <span class="up">▲ ripple grows</span></span>
+      <span class="prop"><b>ΔB</b> unchanged <span class="dn">volt-second driven</span></span>
+      <span class="prop"><b>ΔT</b> ≈ flat <span class="dn">only ripple RMS adds</span></span>
+    </div>
+    <div class="figs" id="figs-g"></div>
+    <p class="takeaway"><b>The gap trades inductance for saturation margin at almost no thermal cost.</b>
+    That's why gapping (or a distributed-gap powder core) is the standard fix for DC-biased chokes.
+    The price is paid elsewhere: more ripple current stresses the output capacitor and switches,
+    and very large gaps fringe.</p>
+  </section>
+
+  <!-- ===================== KNOB 3 : CORE SIZE ===================== -->
+  <section class="knob" id="k-a">
+    <div class="knob-head">
+      <div class="knob-badge">a</div>
+      <div>
+        <h2>Core size (scale <span class="v">a</span>) — the knob that fixes both</h2>
+        <div class="held">Held constant: <b>N</b> = 20, <b>L</b> (re-gapped), window kept full. Every linear dimension scales by <span class="v">a</span>: <span class="v">A<sub>c</sub></span>, <span class="v">W<sub>a</sub></span> ∝ <span class="v">a</span><sup>2</sup>, <span class="v">V<sub>c</sub></span> ∝ <span class="v">a</span><sup>3</sup>.</div>
+      </div>
+    </div>
+    <p>Scaling the whole core up gives flux more iron <em>and</em> copper more window <em>and</em>
+    the losses more surface to escape from. It is the only knob that improves both gauges at once —
+    which is exactly why the area product <span class="v">A<sub>p</sub></span> = <span class="v">A<sub>c</sub>W<sub>a</sub></span> ∝ <span class="v">a</span><sup>4</sup> works as a one-number core-size selector.</p>
+    <div class="prop-row">
+      <span class="prop"><b>B̂</b> ∝ 1/<span class="v">a</span><sup>2</sup> <span class="dn">▼ safer</span></span>
+      <span class="prop"><b>P<sub>cu</sub></b> ∝ 1/<span class="v">a</span> <span class="dn">▼</span></span>
+      <span class="prop"><b>R<sub>θ</sub></b> ∝ <span class="v">a</span><sup>−1.5</sup> <span class="dn">▼</span></span>
+      <span class="prop"><b>ΔT</b> ≈ ∝ <span class="v">a</span><sup>−2.5</sup> <span class="dn">▼ cooler</span></span>
+      <span class="prop">cost & volume ∝ <span class="v">a</span><sup>3</sup> <span class="up">▲</span></span>
+    </div>
+    <div class="figs" id="figs-a"></div>
+    <p class="takeaway"><b>When both gauges are in the red, stop tuning and pick a bigger core.</b>
+    Everything improves steeply with size — the only things that grow are volume, mass, and cost,
+    which is the actual engineering trade.</p>
+  </section>
+
+  <!-- ===================== KNOB 4 : WIRE / J ===================== -->
+  <section class="knob" id="k-j">
+    <div class="knob-head">
+      <div class="knob-badge">J</div>
+      <div>
+        <h2>Wire size (current density <span class="v">J</span>) — a pure heating knob</h2>
+        <div class="held">Held constant: <b>N</b> = 20, <b>L</b>, core, gap. Wire cross-section <span class="v">A<sub>w</sub></span> = <span class="v">I<sub>rms</sub></span>/<span class="v">J</span> varies.</div>
+      </div>
+    </div>
+    <p>Thinner wire = higher current density = more resistance = more heat, in a straight line.
+    And saturation does not care at all — flux depends on amps and turns, not on how thick the
+    copper carrying those amps is. The two gauges fully decouple here:</p>
+    <div class="eq"><span class="v">P<sub>cu</sub></span> <span class="rel">=</span>
+      <span class="v">I<sub>rms</sub></span><sup>2</sup>
+      <span class="fr"><span class="nu"><span class="v">ρ<sub>w</sub> N</span> · <span class="v">MLT</span></span><span class="de"><span class="v">A<sub>w</sub></span></span></span>
+      <span class="rel">=</span> <span class="v">ρ<sub>w</sub> N</span> · <span class="v">MLT</span> · <span class="v">I<sub>rms</sub> J</span>
+      <span class="tag">loss is linear in J</span></div>
+    <div class="prop-row">
+      <span class="prop"><b>P<sub>cu</sub></b> ∝ <span class="v">J</span> <span class="up">▲ hotter</span></span>
+      <span class="prop"><b>B̂</b> unchanged <span class="dn">— flat line</span></span>
+      <span class="prop">fit limit: <span class="v">J</span> ≥ <span class="v">I<sub>rms</sub>N</span>/<span class="v">k<sub>u</sub>W<sub>a</sub></span></span>
+    </div>
+    <div class="figs" id="figs-j"></div>
+    <p class="takeaway"><b>Wire gauge buys temperature, never saturation margin.</b> Use the fattest
+    wire that fits the window (the shaded region is physically unbuildable — the copper won't fit).
+    Typical designs land at 3–6 A/mm²; the thermally-derived
+    <span class="v">J<sub>o</sub></span> equation in the area-product method is just a formal way of picking this point.</p>
+  </section>
+
+  <!-- ===================== KNOB 5 : FREQUENCY ===================== -->
+  <section class="knob" id="k-f">
+    <div class="knob-head">
+      <div class="knob-badge">f</div>
+      <div>
+        <h2>Switching frequency <span class="v">f</span> — set upstream, felt here</h2>
+        <div class="held">Held constant: <b>L</b>, <b>N</b>, gap, core, wire. Converter volt-seconds shrink as 1/<span class="v">f</span>, so ripple <span class="v">ΔI</span> = <span class="v">ΔI</span><sub>0</sub>·<span class="v">f</span><sub>0</sub>/<span class="v">f</span>.</div>
+      </div>
+    </div>
+    <p>With the same inductor, running the converter faster shrinks the current and flux ripple
+    (<span class="v">ΔB</span> ∝ 1/<span class="v">f</span>). Core loss scales as
+    <span class="v">f</span><sup class="v">α</sup><span class="v">ΔB</span><sup class="v">β</sup> ∝
+    <span class="v">f</span><sup> α−β</sup> — and since <span class="v">β</span> &gt; <span class="v">α</span>
+    for ferrite (here 2.75 vs 1.46), core loss <em>falls</em> with frequency at fixed L. The catch is the
+    skin effect: current crowds into a skin depth <span class="v">δ</span> ∝ 1/√<span class="v">f</span>,
+    raising AC resistance — small here because the current is mostly DC, dominant in transformers.</p>
+    <div class="prop-row">
+      <span class="prop"><b>ΔI, ΔB</b> ∝ 1/<span class="v">f</span> <span class="dn">▼</span></span>
+      <span class="prop"><b>Î</b> ↓ slightly <span class="dn">▼ safer</span></span>
+      <span class="prop"><b>P<sub>fe</sub></b> ∝ <span class="v">f</span><sup> α−β</sup> <span class="dn">▼</span></span>
+      <span class="prop"><b>R<sub>ac</sub></b>/<span class="v">R<sub>dc</sub></span> ↑ <span class="up">▲ (ripple only)</span></span>
+    </div>
+    <div class="figs" id="figs-f"></div>
+    <p class="takeaway"><b>At fixed L, faster switching relaxes this inductor</b> — less ripple, less
+    peak flux, less core loss. In a real design you'd cash that in by <em>reducing</em> L
+    (∝ 1/<span class="v">f</span>) and shrinking the core, which is the true reason converters keep
+    moving up in frequency. The bill goes to the switches (switching loss) and to AC winding loss.</p>
+  </section>
+
+  <!-- ===================== SUMMARY ===================== -->
+  <section class="knob">
+    <h2>Cheat sheet — every knob, both gauges</h2>
+    <p>First-order scaling with everything else held constant, as plotted above.
+    <span class="good">Blue</span> improves the gauge, <span class="bad">red</span> worsens it.</p>
+    <div class="sumwrap">
+    <table class="summary">
+      <tr><th>Knob (increase it)</th><th>Saturation B̂</th><th>Copper loss P<sub>cu</sub></th><th>Core loss P<sub>fe</sub></th><th>Net ΔT</th><th>Reach for it when…</th></tr>
+      <tr><td>Turns <span class="m">N</span> (re-gap for same L)</td>
+          <td class="good"><span class="m">∝ 1/N</span> ▼</td>
+          <td class="bad"><span class="m">∝ N²</span> ▲</td>
+          <td class="good"><span class="m">∝ N<sup>−β</sup></span> ▼</td>
+          <td class="bad">rises past the sweet spot</td>
+          <td>positioning between the two limits</td></tr>
+      <tr><td>Air gap <span class="m">ℓ<sub>g</sub></span> (N fixed)</td>
+          <td class="good"><span class="m">≈ ∝ 1/ℓ<sub>g</sub></span> ▼</td>
+          <td class="flat">≈ flat (ripple RMS only)</td>
+          <td class="flat">unchanged (volt-second set)</td>
+          <td class="flat">≈ flat</td>
+          <td>core saturates but runs cool</td></tr>
+      <tr><td>Core scale <span class="m">a</span></td>
+          <td class="good"><span class="m">∝ a<sup>−2</sup></span> ▼</td>
+          <td class="good"><span class="m">∝ a<sup>−1</sup></span> ▼</td>
+          <td class="good"><span class="m">∝ a<sup>−2.5</sup></span> ▼</td>
+          <td class="good"><span class="m">≈ ∝ a<sup>−2.5</sup></span> ▼</td>
+          <td>both gauges are in the red</td></tr>
+      <tr><td>Current density <span class="m">J</span> (thinner wire)</td>
+          <td class="flat">unchanged</td>
+          <td class="bad"><span class="m">∝ J</span> ▲</td>
+          <td class="flat">unchanged</td>
+          <td class="bad"><span class="m">≈ ∝ J</span> ▲</td>
+          <td>never — always use the fattest wire that fits</td></tr>
+      <tr><td>Frequency <span class="m">f</span> (L fixed)</td>
+          <td class="good">Î ↓ slightly ▼</td>
+          <td class="bad">AC part ↑ (skin) ▲</td>
+          <td class="good"><span class="m">∝ f<sup> α−β</sup></span> ▼</td>
+          <td class="good">falls, mildly</td>
+          <td>decided at converter level, not here</td></tr>
+      <tr><td>Peak current <span class="m">Î</span> (spec, not a knob)</td>
+          <td class="bad"><span class="m">∝ Î</span> ▲</td>
+          <td class="bad"><span class="m">∝ I<sub>rms</sub>²</span> ▲</td>
+          <td class="flat">via ripple only</td>
+          <td class="bad">▲</td>
+          <td>— this is what you design <em>against</em></td></tr>
+    </table>
+    </div>
+  </section>
+
+  <div class="caveat"><b>Model fine print.</b> Curves are computed live from the first-order design
+  equations (Hurley &amp; Wölfle ch. 3, Erickson &amp; Maksimović ch. 11 forms): uniform flux, no
+  fringing correction (real large gaps read lower B̂ and higher L than shown), Steinmetz core loss
+  fitted to a 3C90-class ferrite (K<sub>c</sub> = 2.25, α = 1.46, β = 2.75, SI units), natural-convection
+  thermal model R<sub>θ</sub> = 0.06/√V<sub>c</sub>, round solid wire with the low-order Dowell-type
+  R<sub>ac</sub> correction applied to the ripple current only. Good to ±20% — exactly the accuracy
+  class of a first-pass hand design.</div>
+
+  <p class="foot">Companion to the wiki pages <em>Inductor Design Inputs</em>, <em>Equation Reference</em>,
+  and <em>Worked Example — Buck with Gapped Core</em>. Hover any curve to read values; each chart has a
+  data table for screen readers and print.</p>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- baseline physics ---------- */
+const u0 = 4e-7*Math.PI;
+const P = {
+  L:47e-6, Idc:10, dI:4, f:1e5, N:20,
+  Ac:1.0e-4, Wa:1.78e-4, lc:0.092, Vc:8.0e-6, MLT:0.066,
+  ku:0.4, mur:2000, rho:2.1e-8,
+  kc:2.25, al:1.46, be:2.75,
+  Bsat:0.35, dTlim:40
+};
+P.Ihat = P.Idc + P.dI/2;                                   // 12 A
+P.Irms = Math.sqrt(P.Idc*P.Idc + P.dI*P.dI/12);            // 10.07 A
+const Rth0 = 0.06/Math.sqrt(P.Vc);                         // 21.2 C/W
+const Aw0  = P.ku*P.Wa/P.N;                                // 3.56 mm2
+const Rdc0 = P.rho*P.N*P.MLT/Aw0;
+const g0   = u0*P.N*P.N*P.Ac/P.L - P.lc/P.mur;             // ~1.02 mm
+const delta = f => 0.0729/Math.sqrt(f);                    // skin depth, Cu ~100C
+const Fr = (r,d)=>{ const x=Math.pow(r/d,4); return 1 + x/(48+0.8*x); };
+const Pfe = (f,Bac,Vc)=> P.kc*Math.pow(f,P.al)*Math.pow(Bac,P.be)*Vc;
+const lin = (a,b,n)=>Array.from({length:n},(_,i)=>a+(b-a)*i/(n-1));
+
+/* baseline losses for the spec strip */
+const Bpk0 = P.L*P.Ihat/(P.N*P.Ac);
+const Bac0 = P.L*P.dI/(2*P.N*P.Ac);
+const Pfe0 = Pfe(P.f,Bac0,P.Vc);
+const r0   = Math.sqrt(Aw0/Math.PI);
+const Pcu0 = P.Idc*P.Idc*Rdc0 + (P.dI*P.dI/12)*Rdc0*Fr(r0,delta(P.f));
+const dT0  = Rth0*(Pcu0+Pfe0);
+
+/* ---------- spec strip ---------- */
+const spec = [
+  ['Inductance L','47 µH'], ['DC current I<sub>dc</sub>','10 A'],
+  ['Ripple ΔI<sub>pp</sub>','4 A'], ['Peak Î','12 A'],
+  ['Frequency f','100 kHz'], ['Turns N','20'],
+  ['Gap ℓ<sub>g</sub>', (g0*1e3).toFixed(2)+' mm'],
+  ['Core area A<sub>c</sub>','1.0 cm²'], ['Window W<sub>a</sub>','1.78 cm²'],
+  ['Path ℓ<sub>c</sub> / vol V<sub>c</sub>','9.2 cm / 8 cm³'],
+  ['Fill k<sub>u</sub>','0.4'], ['B<sub>sat</sub> (ferrite)','0.35 T'],
+  ['→ Peak flux B̂', Bpk0.toFixed(2)+' T'],
+  ['→ Losses', (Pcu0+Pfe0).toFixed(2)+' W'],
+  ['→ Temp rise ΔT', dT0.toFixed(0)+' °C  (limit 40)']
+];
+document.getElementById('specGrid').innerHTML = spec.map(([k,v])=>
+  `<div class="spec-item"><div class="k">${k}</div><div class="val">${v}</div></div>`).join('');
+
+/* ---------- chart engine ---------- */
+const W=360,H=232,M={l:47,r:12,t:12,b:32};
+const fmt=v=>{const a=Math.abs(v);if(a>=100)return v.toFixed(0);if(a>=10)return v.toFixed(1);if(a>=1)return v.toFixed(2);return v.toFixed(3);};
+const tickFmt=v=>{const s=fmt(v);return s.indexOf('.')<0?s:s.replace(/\.?0+$/,'');};
+function niceStep(span,n){const raw=span/n,mag=Math.pow(10,Math.floor(Math.log10(raw)));
+  for(const c of [1,2,2.5,5,10]){if(raw/ (c*mag)<=1) return c*mag;} return 10*mag;}
+
+function panel(mountId,cfg){
+  const xs=cfg.xs, ys=cfg.ys, n=xs.length;
+  const xmin=xs[0], xmax=xs[n-1];
+  let ymax=Math.max(...ys); if(cfg.limit) ymax=Math.max(ymax,cfg.limit.v*1.18);
+  ymax*=1.06;
+  const ystep=niceStep(ymax,4);
+  ymax=Math.ceil(ymax/ystep)*ystep;
+  const X=x=>M.l+(x-xmin)/(xmax-xmin)*(W-M.l-M.r);
+  const Y=y=>H-M.b-(y/ymax)*(H-M.t-M.b);
+  let s='';
+  // shaded infeasible region
+  if(cfg.shade){
+    s+=`<rect x="${X(xmin)}" y="${M.t}" width="${X(cfg.shade.to)-X(xmin)}" height="${H-M.t-M.b}" fill="var(--shade)"/>`;
+    s+=`<text class="notelab" x="${(X(xmin)+X(cfg.shade.to))/2}" y="${M.t+13}" text-anchor="middle">${cfg.shade.label}</text>`;
+  }
+  // grid + y ticks
+  for(let v=0;v<=ymax+1e-9;v+=ystep){
+    s+=`<line x1="${M.l}" x2="${W-M.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)" stroke-width="1"/>`;
+    s+=`<text class="tick" x="${M.l-6}" y="${Y(v)+3.5}" text-anchor="end">${tickFmt(v)}</text>`;
+  }
+  // x ticks
+  const xstep=niceStep(xmax-xmin,4);
+  for(let v=Math.ceil(xmin/xstep)*xstep; v<=xmax+1e-9; v+=xstep){
+    s+=`<line x1="${X(v)}" x2="${X(v)}" y1="${H-M.b}" y2="${H-M.b+4}" stroke="var(--axis)" stroke-width="1"/>`;
+    s+=`<text class="tick" x="${X(v)}" y="${H-M.b+15}" text-anchor="middle">${tickFmt(v)}</text>`;
+  }
+  // baseline axis
+  s+=`<line x1="${M.l}" x2="${W-M.r}" y1="${H-M.b}" y2="${H-M.b}" stroke="var(--axis)" stroke-width="1"/>`;
+  s+=`<text class="axlab" x="${(M.l+W-M.r)/2}" y="${H-3}" text-anchor="middle">${cfg.xLabel}</text>`;
+  // limit line
+  if(cfg.limit){
+    s+=`<line x1="${M.l}" x2="${W-M.r}" y1="${Y(cfg.limit.v)}" y2="${Y(cfg.limit.v)}" stroke="var(--limit)" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+    s+=`<text class="limlab" x="${W-M.r-2}" y="${Y(cfg.limit.v)-5}" text-anchor="end">${cfg.limit.label}</text>`;
+  }
+  // data path
+  let d='M';
+  for(let i=0;i<n;i++){ d+=`${X(xs[i]).toFixed(1)} ${Y(Math.min(ys[i],ymax)).toFixed(1)}`; if(i<n-1)d+=' L'; }
+  s+=`<path d="${d}" fill="none" stroke="var(${cfg.color})" stroke-width="2" stroke-linejoin="round"/>`;
+  // baseline dot
+  let bi=0,bd=Infinity;
+  for(let i=0;i<n;i++){const e=Math.abs(xs[i]-cfg.baseX);if(e<bd){bd=e;bi=i;}}
+  s+=`<circle cx="${X(xs[bi])}" cy="${Y(ys[bi])}" r="4.5" fill="var(${cfg.color})" stroke="var(--card)" stroke-width="2"/>`;
+  if(cfg.baseLabel) s+=`<text class="notelab" x="${X(xs[bi])+8}" y="${Y(ys[bi])-8}">baseline</text>`;
+  // hover elements
+  s+=`<line class="hx" x1="0" x2="0" y1="${M.t}" y2="${H-M.b}" stroke="var(--axis)" stroke-width="1" opacity="0"/>`;
+  s+=`<circle class="hd" r="3.5" fill="var(${cfg.color})" stroke="var(--card)" stroke-width="1.5" opacity="0"/>`;
+
+  const fig=document.createElement('figure');
+  fig.className='panel';
+  fig.innerHTML=`<div class="p-head"><span class="sw" style="background:var(${cfg.color})"></span>`+
+    `<span class="p-title">${cfg.title}</span><span class="p-unit">${cfg.yUnit}</span></div>`+
+    `<div class="p-plot"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${cfg.title} versus ${cfg.xLabel}">${s}</svg>`+
+    `<div class="tip"></div></div>`+
+    `<details class="data"><summary>Data table</summary><table><tr><th>${cfg.xLabel}</th><th>${cfg.title} (${cfg.yUnit})</th></tr>`+
+    xs.map((x,i)=>i%8===0?`<tr><td>${fmt(x)}</td><td>${fmt(ys[i])}</td></tr>`:'').join('')+
+    `</table></details>`;
+  document.getElementById(mountId).appendChild(fig);
+
+  const svg=fig.querySelector('svg'), tip=fig.querySelector('.tip'),
+        hx=fig.querySelector('.hx'), hd=fig.querySelector('.hd');
+  function move(ev){
+    const r=svg.getBoundingClientRect();
+    const px=(ev.clientX-r.left)/r.width*W;
+    if(px<M.l||px>W-M.r){leave();return;}
+    const xv=xmin+(px-M.l)/(W-M.l-M.r)*(xmax-xmin);
+    let i=0,e=Infinity;
+    for(let k=0;k<n;k++){const d2=Math.abs(xs[k]-xv);if(d2<e){e=d2;i=k;}}
+    hx.setAttribute('x1',X(xs[i]));hx.setAttribute('x2',X(xs[i]));hx.setAttribute('opacity','1');
+    hd.setAttribute('cx',X(xs[i]));hd.setAttribute('cy',Y(Math.min(ys[i],ymax)));hd.setAttribute('opacity','1');
+    tip.textContent=`${cfg.xLabel} ${fmt(xs[i])} · ${fmt(ys[i])} ${cfg.yUnit}`;
+    tip.style.left=(X(xs[i])/W*100)+'%';
+    tip.style.top=(Y(Math.min(ys[i],ymax))/H*100)+'%';
+    tip.style.opacity='1';
+  }
+  function leave(){tip.style.opacity='0';hx.setAttribute('opacity','0');hd.setAttribute('opacity','0');}
+  svg.addEventListener('pointermove',move);
+  svg.addEventListener('pointerleave',leave);
+}
+
+/* ---------- knob 1 : turns ---------- */
+(function(){
+  const Ns=lin(8,40,65), B=[],T=[],G=[];
+  for(const N of Ns){
+    B.push(P.L*P.Ihat/(N*P.Ac));
+    const Aw=P.ku*P.Wa/N, Rdc=P.rho*N*P.MLT/Aw, r=Math.sqrt(Aw/Math.PI);
+    const pcu=P.Idc*P.Idc*Rdc + (P.dI*P.dI/12)*Rdc*Fr(r,delta(P.f));
+    const bac=P.L*P.dI/(2*N*P.Ac);
+    T.push(Rth0*(pcu+Pfe(P.f,bac,P.Vc)));
+    G.push((u0*N*N*P.Ac/P.L - P.lc/P.mur)*1e3);
+  }
+  panel('figs-n',{title:'Peak flux density B̂',yUnit:'T',xs:Ns,ys:B,color:'--flux',
+    xLabel:'turns N',limit:{v:P.Bsat,label:'B_sat 0.35 T'},baseX:20,baseLabel:true});
+  panel('figs-n',{title:'Temperature rise ΔT',yUnit:'°C',xs:Ns,ys:T,color:'--heat',
+    xLabel:'turns N',limit:{v:P.dTlim,label:'ΔT limit 40 °C'},baseX:20});
+  panel('figs-n',{title:'Required gap ℓ_g',yUnit:'mm',xs:Ns,ys:G,color:'--aux',
+    xLabel:'turns N',baseX:20});
+})();
+
+/* ---------- knob 2 : gap ---------- */
+(function(){
+  const gs=lin(0.2,3.0,65), Lp=[],B=[],T=[];
+  for(const gmm of gs){
+    const g=gmm*1e-3;
+    const L=u0*P.N*P.N*P.Ac/(g+P.lc/P.mur);
+    const dI=P.dI*P.L/L, Ihat=P.Idc+dI/2;
+    Lp.push(L*1e6);
+    B.push(L*Ihat/(P.N*P.Ac));
+    const pcu=P.Idc*P.Idc*Rdc0 + (dI*dI/12)*Rdc0*Fr(r0,delta(P.f));
+    T.push(Rth0*(pcu+Pfe0));          // ΔB is volt-second set → Pfe unchanged
+  }
+  panel('figs-g',{title:'Inductance L',yUnit:'µH',xs:gs,ys:Lp,color:'--aux',
+    xLabel:'gap ℓ_g (mm)',baseX:g0*1e3});
+  panel('figs-g',{title:'Peak flux density B̂',yUnit:'T',xs:gs,ys:B,color:'--flux',
+    xLabel:'gap ℓ_g (mm)',limit:{v:P.Bsat,label:'B_sat 0.35 T'},baseX:g0*1e3});
+  panel('figs-g',{title:'Temperature rise ΔT',yUnit:'°C',xs:gs,ys:T,color:'--heat',
+    xLabel:'gap ℓ_g (mm)',limit:{v:P.dTlim,label:'ΔT limit 40 °C'},baseX:g0*1e3});
+})();
+
+/* ---------- knob 3 : core scale ---------- */
+(function(){
+  const as=lin(0.7,1.6,65), B=[],T=[];
+  for(const a of as){
+    const Ac=P.Ac*a*a, Wa=P.Wa*a*a, Vc=P.Vc*a*a*a, MLT=P.MLT*a;
+    const Aw=P.ku*Wa/P.N, Rdc=P.rho*P.N*MLT/Aw, r=Math.sqrt(Aw/Math.PI);
+    const pcu=P.Idc*P.Idc*Rdc + (P.dI*P.dI/12)*Rdc*Fr(r,delta(P.f));
+    const bac=P.L*P.dI/(2*P.N*Ac);
+    B.push(P.L*P.Ihat/(P.N*Ac));
+    T.push((0.06/Math.sqrt(Vc))*(pcu+Pfe(P.f,bac,Vc)));
+  }
+  panel('figs-a',{title:'Peak flux density B̂',yUnit:'T',xs:as,ys:B,color:'--flux',
+    xLabel:'scale factor a',limit:{v:P.Bsat,label:'B_sat 0.35 T'},baseX:1});
+  panel('figs-a',{title:'Temperature rise ΔT',yUnit:'°C',xs:as,ys:T,color:'--heat',
+    xLabel:'scale factor a',limit:{v:P.dTlim,label:'ΔT limit 40 °C'},baseX:1});
+})();
+
+/* ---------- knob 4 : current density ---------- */
+(function(){
+  const Jfit=P.Irms*P.N/(P.ku*P.Wa)/1e6;      // A/mm2, ~2.84
+  const Js=lin(1.5,8,65), T=[],B=[];
+  for(const J of Js){
+    const Aw=P.Irms/(J*1e6), Rdc=P.rho*P.N*P.MLT/Aw, r=Math.sqrt(Aw/Math.PI);
+    const pcu=P.Idc*P.Idc*Rdc + (P.dI*P.dI/12)*Rdc*Fr(r,delta(P.f));
+    T.push(Rth0*(pcu+Pfe0));
+    B.push(Bpk0);
+  }
+  panel('figs-j',{title:'Temperature rise ΔT',yUnit:'°C',xs:Js,ys:T,color:'--heat',
+    xLabel:'J (A/mm²)',limit:{v:P.dTlim,label:'ΔT limit 40 °C'},baseX:Jfit,
+    shade:{to:Jfit,label:'wire won’t fit window'}});
+  panel('figs-j',{title:'Peak flux density B̂ — unaffected',yUnit:'T',xs:Js,ys:B,color:'--flux',
+    xLabel:'J (A/mm²)',limit:{v:P.Bsat,label:'B_sat 0.35 T'},baseX:Jfit});
+})();
+
+/* ---------- knob 5 : frequency ---------- */
+(function(){
+  const fs=lin(25,400,80), B=[],T=[];
+  for(const fk of fs){
+    const f=fk*1e3;
+    const dI=P.dI*P.f/f, Ihat=P.Idc+dI/2;
+    B.push(P.L*Ihat/(P.N*P.Ac));
+    const bac=P.L*dI/(2*P.N*P.Ac);
+    const pcu=P.Idc*P.Idc*Rdc0 + (dI*dI/12)*Rdc0*Fr(r0,delta(f));
+    T.push(Rth0*(pcu+Pfe(f,bac,P.Vc)));
+  }
+  panel('figs-f',{title:'Peak flux density B̂',yUnit:'T',xs:fs,ys:B,color:'--flux',
+    xLabel:'f (kHz)',limit:{v:P.Bsat,label:'B_sat 0.35 T'},baseX:100});
+  panel('figs-f',{title:'Temperature rise ΔT',yUnit:'°C',xs:fs,ys:T,color:'--heat',
+    xLabel:'f (kHz)',limit:{v:P.dTlim,label:'ΔT limit 40 °C'},baseX:100});
+})();
+})();
+</script>
+
+</html>

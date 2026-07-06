@@ -1,50 +1,52 @@
 # Magnetics Wiki
 
-This repository is a source-backed markdown knowledge base for transformer and inductor design in power electronics. It is built from raw textbook extracts, application notes, datasheets, and design calculations, then normalized into a linked wiki under `WIKI/` using the rules in `magnetics-wiki-schema.md`.
+This repository organizes notes on power-electronics magnetics, inductor design, transformer design, core materials, winding effects, and validation. The user-facing documentation now starts with a practical one-page design guide and keeps deeper theory in consolidated reference pages.
+
+Start here:
+
+- [Master Design Guide](WIKI/master-design-guide.md): one practical checklist for inductors and one for transformers.
+- [Wiki Index](WIKI/index.md): short map of all consolidated pages.
+- [Equation Reference](WIKI/equation-reference.md): formula lookup.
 
 ## Repository Structure
 
-- `Raw/`: raw source material awaiting ingestion or re-ingestion.
-- `WIKI/`: compiled, linked, citation-backed wiki pages.
-- `SOURCE_NOTES/`: source-specific notes used during ingestion to map coverage, extract equations, and track unresolved gaps.
-- `magnetics-wiki-schema.md`: the governing schema for wiki content, linking, traceability, GIC modeling, and conflict resolution.
+```text
+Raw/           Source extracts and PDFs kept for provenance.
+SOURCE_NOTES/  Per-source ingestion notes and coverage notes.
+WIKI/          Consolidated design guide, deep dives, equations, and validation notes.
+```
+
+## WIKI Structure
+
+| Page | Purpose |
+| --- | --- |
+| [master-design-guide.md](WIKI/master-design-guide.md) | Beginner-oriented design recipe for one inductor flow and one transformer flow. |
+| [inductor-design-deep-dive.md](WIKI/inductor-design-deep-dive.md) | Consolidated inductor inputs, equations, sensitivity logic, coupled inductor notes, and worked buck example. |
+| [transformer-design-deep-dive.md](WIKI/transformer-design-deep-dive.md) | Consolidated transformer model, area-product method, insulation notes, and fractional-turn notes. |
+| [magnetic-theory.md](WIKI/magnetic-theory.md) | B/H/Phi fundamentals, reluctance, energy storage, saturation, and magnetic analogies. |
+| [core-gap-and-thermal-design.md](WIKI/core-gap-and-thermal-design.md) | Core materials, gap strategy, fringing, area product, and thermal sizing. |
+| [high-frequency-and-winding-effects.md](WIKI/high-frequency-and-winding-effects.md) | Skin effect, proximity effect, core loss, conductor choices, and frequency tradeoffs. |
+| [converter-topologies.md](WIKI/converter-topologies.md) | Topology-to-magnetic-role routing table. |
+| [verification-and-measurement.md](WIKI/verification-and-measurement.md) | Source-backed measurement methods and validation checks. |
+| [equation-reference.md](WIKI/equation-reference.md) | Compact equation sheet. |
 
 ## Current Coverage
 
-The wiki currently covers:
+The consolidated wiki currently covers:
 
-- electromagnetic fundamentals
-- air-gap behavior and saturation
-- the magnetic-mechanical (spring-mass) analogy for inductance, reluctance, permeability, gaps, and saturation
-- distributed-gap versus discrete-gap tradeoffs
-- core materials and losses
-- CCM buck output-filter inductor design
-- thermal/core-selection methodology for inductors
-- a worked buck-inductor example
-- verification and measurement methods
-- practical transformer modeling
-- transformer design methodology
-- transformer insulation
-- high-frequency winding and core effects
-- converter topology inventory for DC/DC, AC/DC, and DC/AC magnetics planning
-- general inductor design input checklist for converter-derived inductors
+- Electromagnetic fundamentals: Faraday's law, Ampere's law, reluctance, flux density, and saturation.
+- Power-inductor workflow: input definition, ripple, peak current, core selection, gap/effective permeability, winding design, losses, temperature rise, and validation.
+- Transformer workflow: true-transformer classification, volt-second turns, area product, practical equivalent circuit, insulation, leakage, and fractional turns.
+- Core and gap selection: ferrite, powder/composite, distributed gap, discrete gap, fringing, and thermal tradeoffs.
+- High-frequency effects: skin depth, proximity effect, AC resistance, Steinmetz-style core loss, and conductor selection.
+- Bench verification: inductance under bias, incremental inductance, B-H loop measurement, transformer core-loss testing, and thermal checks.
 
-Start at [WIKI/index.md](WIKI/index.md).
-
-## Ingestion Workflow
-
-1. Add source files to `Raw/`.
-2. Create or update a note in `SOURCE_NOTES/` for that source.
-3. Extract equations, constraints, tradeoffs, and worked examples into linked pages in `WIKI/`.
-4. Cite every factual claim to a specific source section.
-5. Mark unsupported claims as `[UNVERIFIED]` instead of filling gaps from memory.
-6. Record the change in [WIKI/changelog.md](WIKI/changelog.md).
+Some topology-specific areas remain placeholders until source-backed notes are added, including LLC-specific magnetics, inverter output filters, interleaved PFC magnetics, and detailed safety-standard tables.
 
 ## Content Rules
 
-- Every wiki page must link to at least one other wiki page.
-- Use GIC framing where applicable: Geometry, Input, Constraint.
-- Prefer higher-priority sources when conflicts exist.
-- Keep factual sections clinical and source-specific.
-
-See [magnetics-wiki-schema.md](magnetics-wiki-schema.md) for the full ruleset.
+- Keep the [Master Design Guide](WIKI/master-design-guide.md) practical and short; move derivations and caveats into the deep dives.
+- Mark strict equations separately from rules of thumb when adding beginner-facing guidance.
+- Preserve source traceability with `[source: ...]` notes where source material is used.
+- Keep raw extracts in `Raw/` and source coverage notes in `SOURCE_NOTES/`.
+- Record major documentation reorganizations in [WIKI/changelog.md](WIKI/changelog.md).

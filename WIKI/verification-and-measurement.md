@@ -114,9 +114,9 @@ To complete this page without unverified placeholders, add manufacturer app note
 
 ## Related Pages
 
-- [Buck Output Filter Inductor Design](./buck-output-filter-inductor-design.md)
-- [Worked Example: Buck Gapped Core](./worked-example-buck-gapped-core.md)
-- [Core Materials And Losses](./core-materials-and-losses.md)
-- [Air Gap And Saturation](./air-gap-and-saturation.md)
-- [Thermal Design And Core Selection](./thermal-design-and-core-selection.md)
+- [Master Design Guide](./master-design-guide.md)
+- [Inductor Design Deep Dive](./inductor-design-deep-dive.md)
+- [Transformer Design Deep Dive](./transformer-design-deep-dive.md)
+- [Core, Gap, And Thermal Design](./core-gap-and-thermal-design.md)
+- [High-Frequency And Winding Effects](./high-frequency-and-winding-effects.md)
 - [Index](./index.md)

@@ -15,13 +15,13 @@
 
 ## Wiki Pages Fed By This Source
 
-- `WIKI/coupled-filter-inductors.md`
-- `WIKI/fractional-turn-transformers.md`
+- `WIKI/inductor-design-deep-dive.md`
+- `WIKI/transformer-design-deep-dive.md`
 
 ## Candidate Follow-On Updates
 
-- enhance `WIKI/practical-transformer-model.md` with physical-to-equivalent-circuit derivation notes
-- enhance `WIKI/high-frequency-effects.md` with winding-placement tradeoffs and rectangular-drive caveats
+- enhance `WIKI/transformer-design-deep-dive.md` with physical-to-equivalent-circuit derivation notes
+- enhance `WIKI/high-frequency-and-winding-effects.md` with winding-placement tradeoffs and rectangular-drive caveats
 - add a dedicated page on winding layout and hierarchy for SMPS transformers
 
 ## Notes

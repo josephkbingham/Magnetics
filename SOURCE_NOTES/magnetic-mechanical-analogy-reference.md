@@ -22,7 +22,8 @@ A from-scratch derivation of a three-level spring-mass analogy for magnetic comp
 
 ## Wiki Pages Fed By This Source
 
-- `WIKI/magnetic-mechanical-analogy.md` (new page)
+- `WIKI/magnetic-theory.md`
+- `WIKI/core-gap-and-thermal-design.md`
 
 ## Candidate Follow-On Updates
 
