@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-05 (gap, permeability, and industry split)
+
+- Expanded `air-gap-and-saturation.md` with a permeability-versus-saturation section showing why raw ferrite $\mu_r$ is second-order in a discrete-gapped inductor, using the sensitivity-page baseline effective magnetic length. [source: /WIKI/inductor-design-sensitivity.md GIC and Governing Equations] [source: Erickson & Maksimovic Ch. 10 discussion following eq. 10.31]
+- Expanded `distributed-gap-and-fringing.md` with the practical industry split between discrete-gapped ferrite, distributed-gap powder/metal-composite inductors, and ungapped transformer/common-mode applications. [source: TI SLUP132 §2 Core Limitations in SMPS Applications] [source: Hurley & Wolfle Ch. 2 §2.3.2] [source: User note 2026-07-05]
+- Updated `inductor-design-inputs.md` so the core checklist distinguishes hot $B_{sat}$ and loss curves for gapped ferrite from selected $\mu_{eff}$ grade for distributed-gap powder cores. [source: Hurley & Wolfle Ch. 1 §1.3] [source: Hurley & Wolfle Ch. 2 §2.3.2]
+
+## 2026-07-05 (inductor design sensitivity)
+
+- Added `inductor-design-sensitivity.md`: one-variable-at-a-time scaling of $\hat{B}$ and $\Delta T$ for turns, gap, core scale, current density, and frequency, with a GIC-defined baseline design point (47 µH / 10 A / 100 kHz gapped-ferrite buck choke), a sensitivity-relations table, and a Tradeoffs section identifying the forcing constraint for each variable. [source: Hurley & Wolfle Ch. 3 §3.1-§3.2] [source: Erickson & Maksimovic Ch. 11 §11.1]
+- Added `interactive/inductor-design-sensitivity.html`, a self-contained interactive chart page computing all sensitivity curves live from the same equations (hover tooltips, data tables, light/dark themes); linked from the new page. Steinmetz constants in the model are fitted representative MnZn values and flagged `[UNVERIFIED]` pending a manufacturer loss datasheet ingestion. [source: /magnetics-wiki-schema.md §4.1]
+- Updated `index.md` and the Related Pages lists of `equation-reference.md` and `inductor-design-inputs.md` to link the new page. [source: /magnetics-wiki-schema.md §2]
+
+## 2026-07-05 (self and mutual inductance analogy)
+
+- Added `self-and-mutual-inductance-analogy.md` with the water-wheel/shared-belt analogy for self-inductance, mutual inductance, coupling coefficient, leakage flux, coupled-coil energy, and the ideal transformer voltage-ratio consequence. [source: User note 2026-07-05]
+- Updated `index.md` so the new analogy page appears next to `magnetic-mechanical-analogy.md` in both the page list and navigation text. [source: /magnetics-wiki-schema.md §2]
+
 ## 2026-07-03 (magnetic-mechanical analogy)
 
 - Ingested `Raw/Magnetic_Mechanical_Analogy_Reference.docx` (extracted to `Raw/Magnetic_Mechanical_Analogy_Reference.md`) and added `SOURCE_NOTES/magnetic-mechanical-analogy-reference.md` mapping its coverage. [source: /magnetics-wiki-schema.md §1]

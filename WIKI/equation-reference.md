@@ -477,6 +477,7 @@ $$
 - [Magnetic-Mechanical Analogy](./magnetic-mechanical-analogy.md)
 - [Distributed Gap And Fringing](./distributed-gap-and-fringing.md)
 - [Buck Output Filter Inductor Design](./buck-output-filter-inductor-design.md)
+- [Inductor Design Sensitivity](./inductor-design-sensitivity.md)
 - [Thermal Design And Core Selection](./thermal-design-and-core-selection.md)
 - [Practical Transformer Model](./practical-transformer-model.md)
 - [Transformer Design Methodology](./transformer-design-methodology.md)
